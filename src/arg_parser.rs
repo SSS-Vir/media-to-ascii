@@ -7,7 +7,7 @@ pub fn args_parse(mut args: Args) -> Result<(String, u64), Box<dyn Error>> {
     let mut fps = 15;
     args.next();
     for arg in args {
-        if arg.starts_with("--fps") && fps == 24 {
+        if arg.starts_with("--fps") && fps == 15 {
             fps = parse_fps(&arg);
         } else if file_exists(&arg) && file_path.is_empty() {
             file_path = arg;
