@@ -4,7 +4,7 @@ use std::fs::File;
 
 pub fn args_parse(mut args: Args) -> Result<(String, u64), Box<dyn Error>> {
     let mut file_path = String::from("");
-    let mut fps = 24;
+    let mut fps = 15;
     args.next();
     for arg in args {
         if arg.starts_with("--fps") && fps == 24 {
@@ -19,7 +19,7 @@ pub fn args_parse(mut args: Args) -> Result<(String, u64), Box<dyn Error>> {
 }
 
 fn parse_fps(arg: &String) -> u64 {
-    let default_value = 24;
+    let default_value = 15;
     let fps_num = arg.split('=').collect::<Vec<&str>>();
     if fps_num.len() != 2 {
         return default_value;
