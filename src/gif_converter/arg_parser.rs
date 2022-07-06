@@ -1,19 +1,18 @@
-use std::env::Args;
-use std::path::Path;
-
-pub fn args_parse(mut args: Args) -> Result<(String, u64), &'static str> {
-    let mut file_path = String::from("");
+pub fn args_parse(args: &Vec<String>) -> Result<(String, u64), &'static str> {
+    let file_path = args[0].clone();
     let mut fps = 15;
-    args.next();
+
     for arg in args {
-        if arg.starts_with("--fps") && fps == 15 {
-            fps = parse_fps(&arg);
-        } else if file_exists(&arg) && file_path.is_empty() {
-            file_path = arg;
+        if arg.starts_with("--") {
+            let attr = arg.chars().skip(2).collect::<String>();
+
+            if attr.starts_with("fps") {
+                fps = parse_fps(arg);
+            }
         }
     }
 
-    return Result::Ok((file_path, fps));
+    return Ok((file_path, fps));
 }
 
 fn parse_fps(arg: &String) -> u64 {
@@ -30,6 +29,3 @@ fn parse_fps(arg: &String) -> u64 {
     return fps;
 }
 
-fn file_exists(path: &String) -> bool {
-    Path::new(path).exists()
-}
