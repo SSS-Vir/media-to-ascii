@@ -4,18 +4,24 @@ mod gif_ascii;
 #[path = "./utils/path_utils.rs"]
 mod path_utils;
 
+mod help;
+
 use path_utils::{file_exists, get_file_extension};
 use std::env::args;
 use gif_ascii::gif_to_ascii;
 
 fn main() -> Result<(), &'static str> {
-
-
     let args: Vec<String> = args().skip(1).collect();
     if args.len() < 1 {
         println!("File was not given");
         return Ok(());
     }
+
+    if args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
+        help::usage_message();
+        return Ok(());
+    }
+
 
     let file_path = &args[0];
 
@@ -24,7 +30,6 @@ fn main() -> Result<(), &'static str> {
         return Ok(());
     }
 
-    //let file_extension = "sad";
     let file_extension = get_file_extension(&file_path);
 
     match file_extension {

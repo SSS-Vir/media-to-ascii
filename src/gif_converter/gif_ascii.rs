@@ -1,4 +1,4 @@
-#[path="../utils/color_utils.rs"]
+#[path = "../utils/color_utils.rs"]
 mod color_utils;
 mod arg_parser;
 
@@ -10,15 +10,18 @@ use std::fs::File;
 use std::thread::sleep;
 use std::time::Duration;
 use std::time::SystemTime;
+use colored::{ColoredString, Colorize};
 
 pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
     let file_path: String;
     let fps: u64;
+    let colored: bool;
 
     match args_parse(args) {
-        Ok((path, fpss)) => {
+        Ok((path, fpss, color)) => {
             file_path = path;
             fps = fpss;
+            colored = color;
         }
         Err(err) => {
             println!("{}", err);
@@ -57,8 +60,8 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
         }
     };
 
-    let mut current_line = String::new();
-    let mut all_lines: Vec<String> = Vec::new();
+    let mut current_line = Vec::<ColoredString>::new();
+    let mut all_lines = Vec::<Vec<ColoredString>>::new();
 
     std::process::Command::new("clear").status().unwrap();
 
@@ -77,15 +80,24 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
             ); //resize frame so it fit in terminal
             let frame = frame.as_raw();
             for j in (0..frame.len()).step_by(4) {
-                let r = frame[j] as f32;
-                let g = frame[j + 1] as f32;
-                let b = frame[j + 2] as f32;
-                let brightness = determine_brightness(r, g, b);
-                current_line.push(get_colorchar(brightness));
+                let r = frame[j];
+                let g = frame[j + 1];
+                let b = frame[j + 2];
+                let brightness = determine_brightness(&r, &g, &b);
+                if colored {
+                    current_line.push(get_colorchar(brightness).to_string().truecolor(
+                        r,
+                        g,
+                        b,
+                    ));
+                }
+                else {
+                    current_line.push(get_colorchar(brightness).to_string().normal());
+                }
                 if j % (new_width * 4) as usize == 0 && j != 0 {
-                    current_line.push('\n');
+                    current_line.push('\n'.to_string().truecolor(255, 255, 255));
                     all_lines.push(current_line);
-                    current_line = String::new();
+                    current_line = Vec::<ColoredString>::new();
                 }
             }
 
@@ -93,7 +105,9 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
                 for _ in 0..(new_width / 2) {
                     print!(" ");
                 }
-                print!("{}", line);
+                for c in line {
+                    print!("{}", c);
+                }
             }
 
             current_line.clear();

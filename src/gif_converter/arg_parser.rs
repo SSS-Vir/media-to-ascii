@@ -1,6 +1,7 @@
-pub fn args_parse(args: &Vec<String>) -> Result<(String, u64), &'static str> {
+pub fn args_parse(args: &Vec<String>) -> Result<(String, u64, bool), &'static str> {
     let file_path = args[0].clone();
     let mut fps = 15;
+    let mut colored = false;
 
     for arg in args {
         if arg.starts_with("--") {
@@ -9,10 +10,14 @@ pub fn args_parse(args: &Vec<String>) -> Result<(String, u64), &'static str> {
             if attr.starts_with("fps") {
                 fps = parse_fps(arg);
             }
+
+            if attr.starts_with("colored") {
+                colored = true;
+            }
         }
     }
 
-    return Ok((file_path, fps));
+    return Ok((file_path, fps, colored));
 }
 
 fn parse_fps(arg: &String) -> u64 {
