@@ -1,9 +1,10 @@
 # media-to-ascii
 
-***Useless piece of s... created at 3 am because... just because***
+***~~Useless piece of s...~~ created at 3 am because... just because***
 
 ## Build from source
 ```sh
+git clone https://github.com/SSS-Vir/media-to-ascii.git
 cd media-to-ascii
 cargo build --release
 ```
