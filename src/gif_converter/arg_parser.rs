@@ -1,8 +1,7 @@
 use std::env::Args;
-use std::error::Error;
-use std::fs::File;
+use std::path::Path;
 
-pub fn args_parse(mut args: Args) -> Result<(String, u64), Box<dyn Error>> {
+pub fn args_parse(mut args: Args) -> Result<(String, u64), &'static str> {
     let mut file_path = String::from("");
     let mut fps = 15;
     args.next();
@@ -13,7 +12,6 @@ pub fn args_parse(mut args: Args) -> Result<(String, u64), Box<dyn Error>> {
             file_path = arg;
         }
     }
-
 
     return Result::Ok((file_path, fps));
 }
@@ -26,15 +24,12 @@ fn parse_fps(arg: &String) -> u64 {
     }
     let fps = match fps_num[1].parse::<u64>() {
         Ok(x) => x,
-        Err(_) => default_value
+        Err(_) => default_value,
     };
 
     return fps;
 }
 
 fn file_exists(path: &String) -> bool {
-    match File::open(path) {
-        Ok(_) => true,
-        Err(_) => false
-    }
+    Path::new(path).exists()
 }
