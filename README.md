@@ -11,7 +11,7 @@ binary ***hello*** will be in target/release/
 
 ## Usage
 usage: hello FILE_PATH [OPTIONS]
-Options for .gif files:
+<br>Options for .gif files:
   <br>&ensp;--fps=FPS     Gif's FPS (default 15)
   <br>&ensp;--colored     Makes ascii colored
 
