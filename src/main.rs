@@ -9,11 +9,16 @@ mod gif_converter {
     pub mod gif_ascii;
 }
 
+mod other_converter {
+    pub mod arg_parser;
+    pub mod other_ascii;
+}
+
 mod help;
 
 use gif_converter::gif_ascii::gif_to_ascii;
 use std::env::args;
-use utils::path_utils::{file_exists, get_file_extension, is_file};
+use utils::path_utils::{get_file_extension, is_file, path_exists};
 
 fn main() -> Result<(), &'static str> {
     let args: Vec<String> = args().skip(1).collect();
@@ -29,7 +34,7 @@ fn main() -> Result<(), &'static str> {
 
     let file_path = &args[0];
 
-    if !file_exists(file_path) {
+    if !path_exists(file_path) {
         println!("{} : path doesn't exist", file_path);
         return Ok(());
     }
@@ -43,24 +48,31 @@ fn main() -> Result<(), &'static str> {
 
     match file_extension {
         "gif" => {
-            gif_to_ascii(&args).expect("idk");
+            match gif_to_ascii(&args) {
+                Ok(_) => {}
+                Err(err) => {
+                    print!("{}", err)
+                }
+            };
         }
 
         "" => {
             println!("{} file has no format", file_path);
-            return Ok(());
         }
 
         ext => {
             let supported = vec!["jpeg", "jpg", "png"];
             if supported.contains(&ext) {
-                todo!();
+                match other_converter::other_ascii::picture_to_ascii(&args) {
+                    Ok(_) => {}
+                    Err(err) => {
+                        println!("{}", err);
+                    }
+                }
             } else {
                 println!("{} is unsupported format yet", ext);
             }
-            return Ok(());
         }
     }
-
     Ok(())
 }

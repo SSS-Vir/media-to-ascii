@@ -1,6 +1,6 @@
 use std::path::Path;
 
-pub fn file_exists(path: &String) -> bool {
+pub fn path_exists(path: &String) -> bool {
     Path::new(path).exists()
 }
 
@@ -13,4 +13,9 @@ pub fn get_file_extension(path: &String) -> &str {
 
 pub fn is_file(path: &String) -> bool {
     Path::new(path).is_file()
+}
+
+pub fn get_file_name(path: &String) -> String {
+    let p = Path::new(path);
+    p.file_name().unwrap().to_str().unwrap().into()
 }
