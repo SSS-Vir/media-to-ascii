@@ -1,14 +1,19 @@
-#[path = "./gif_converter/gif_ascii.rs"]
-mod gif_ascii;
+mod utils {
+    pub mod ascii_utils;
+    pub mod color_utils;
+    pub mod path_utils;
+}
 
-#[path = "./utils/path_utils.rs"]
-mod path_utils;
+mod gif_converter {
+    pub mod arg_parser;
+    pub mod gif_ascii;
+}
 
 mod help;
 
-use gif_ascii::gif_to_ascii;
-use path_utils::{file_exists, get_file_extension, is_file};
+use gif_converter::gif_ascii::gif_to_ascii;
 use std::env::args;
+use utils::path_utils::{file_exists, get_file_extension, is_file};
 
 fn main() -> Result<(), &'static str> {
     let args: Vec<String> = args().skip(1).collect();
@@ -47,7 +52,12 @@ fn main() -> Result<(), &'static str> {
         }
 
         ext => {
-            println!("{} is unsupported format yet", ext);
+            let supported = vec!["jpeg", "jpg", "png"];
+            if supported.contains(&ext) {
+                todo!();
+            } else {
+                println!("{} is unsupported format yet", ext);
+            }
             return Ok(());
         }
     }

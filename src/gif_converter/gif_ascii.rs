@@ -1,28 +1,13 @@
-mod arg_parser;
-#[path = "../utils/color_utils.rs"]
-mod color_utils;
-
-use arg_parser::args_parse;
-use color_utils::{determine_brightness, get_colorchar};
-use colored::{ColoredString, Colorize};
-use image::codecs::gif::GifDecoder;
-use image::AnimationDecoder;
+use super::arg_parser::args_parse;
+use crate::utils::ascii_utils::ImageBufferExtensions;
+use image::{codecs::gif::GifDecoder, AnimationDecoder};
 use std::fs::File;
 use std::thread::sleep;
-use std::time::Duration;
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
-    let file_path: String;
-    let fps: u64;
-    let colored: bool;
-
-    match args_parse(args) {
-        Ok((path, fpss, color)) => {
-            file_path = path;
-            fps = fpss;
-            colored = color;
-        }
+    let (file_path, fps, colored) = match args_parse(args) {
+        Ok((path, fps, color)) => (path, fps, color),
         Err(err) => {
             println!("{}", err);
             return Result::Ok(());
@@ -30,11 +15,6 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
     };
 
     let time_for_frame: u64 = 1000 / fps;
-
-    if file_path.is_empty() {
-        println!("File was not given or doesn't exist");
-        return Ok(());
-    }
 
     let file_gif = match File::open(file_path) {
         Ok(x) => x,
@@ -60,9 +40,6 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
         }
     };
 
-    let mut current_line = Vec::<ColoredString>::new();
-    let mut all_lines = Vec::<Vec<ColoredString>>::new();
-
     clearscreen::clear().expect("failed to clear screen"); // cross-platform screen cleaning
 
     loop {
@@ -78,35 +55,26 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
                 new_width as u32,
                 new_height as u32,
             ); //resize frame so it fit in terminal
-            let frame = frame.as_raw();
-            for j in (0..frame.len()).step_by(4) {
-                let r = frame[j];
-                let g = frame[j + 1];
-                let b = frame[j + 2];
-                let brightness = determine_brightness(&r, &g, &b);
-                if colored {
-                    current_line.push(get_colorchar(brightness).to_string().truecolor(r, g, b));
-                } else {
-                    current_line.push(get_colorchar(brightness).to_string().normal());
+
+            if !colored {
+                let frame_str = frame.to_ascii_string();
+                for line in frame_str {
+                    for _ in 0..(new_width / 2) {
+                        print!(" ");
+                    }
+                    print!("{}", line);
                 }
-                if j % (new_width * 4) as usize == 0 && j != 0 {
-                    current_line.push('\n'.to_string().truecolor(255, 255, 255));
-                    all_lines.push(current_line);
-                    current_line = Vec::<ColoredString>::new();
+            } else {
+                let frame_str = frame.to_colored_ascii();
+                for line in frame_str {
+                    for _ in 0..(new_width / 2) {
+                        print!(" ");
+                    }
+                    for c in line {
+                        print!("{}", c);
+                    }
                 }
             }
-
-            for line in &all_lines {
-                for _ in 0..(new_width / 2) {
-                    print!(" ");
-                }
-                for c in line {
-                    print!("{}", c);
-                }
-            }
-
-            current_line.clear();
-            all_lines.clear();
 
             match time_start.elapsed() {
                 Ok(time) => {

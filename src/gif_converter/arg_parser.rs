@@ -9,9 +9,7 @@ pub fn args_parse(args: &Vec<String>) -> Result<(String, u64, bool), &'static st
 
             if attr.starts_with("fps") {
                 fps = parse_fps(arg);
-            }
-
-            if attr.starts_with("colored") {
+            } else if attr.starts_with("colored") {
                 colored = true;
             }
         }
@@ -33,4 +31,3 @@ fn parse_fps(arg: &String) -> u64 {
 
     return fps;
 }
-
