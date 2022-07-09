@@ -10,5 +10,5 @@ pub fn get_colorchar(brightness: f32) -> char {
 }
 
 pub fn determine_brightness(r: &u8, g: &u8, b: &u8) -> f32 {
-    return 0.2126 * (r.clone() as f32) + 0.7152 * (g.clone() as f32) + 0.0722 * (b.clone() as f32); // magic
+    return 0.2126 * (r.clone() as f32) + 0.7152 * (g.clone() as f32) + 0.0722 * (b.clone() as f32);
 }

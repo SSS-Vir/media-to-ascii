@@ -1,16 +1,16 @@
+mod arg_parser;
 #[path = "../utils/color_utils.rs"]
 mod color_utils;
-mod arg_parser;
 
 use arg_parser::args_parse;
 use color_utils::{determine_brightness, get_colorchar};
+use colored::{ColoredString, Colorize};
 use image::codecs::gif::GifDecoder;
 use image::AnimationDecoder;
 use std::fs::File;
 use std::thread::sleep;
 use std::time::Duration;
 use std::time::SystemTime;
-use colored::{ColoredString, Colorize};
 
 pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
     let file_path: String;
@@ -85,13 +85,8 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
                 let b = frame[j + 2];
                 let brightness = determine_brightness(&r, &g, &b);
                 if colored {
-                    current_line.push(get_colorchar(brightness).to_string().truecolor(
-                        r,
-                        g,
-                        b,
-                    ));
-                }
-                else {
+                    current_line.push(get_colorchar(brightness).to_string().truecolor(r, g, b));
+                } else {
                     current_line.push(get_colorchar(brightness).to_string().normal());
                 }
                 if j % (new_width * 4) as usize == 0 && j != 0 {
