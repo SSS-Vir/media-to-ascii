@@ -63,7 +63,7 @@ pub fn gif_to_ascii(args: &Vec<String>) -> Result<(), &'static str> {
     let mut current_line = Vec::<ColoredString>::new();
     let mut all_lines = Vec::<Vec<ColoredString>>::new();
 
-    std::process::Command::new("clear").status().unwrap();
+    clearscreen::clear().expect("failed to clear screen"); // cross-platform screen cleaning
 
     loop {
         for index in 0..frames.len() {
