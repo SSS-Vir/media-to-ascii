@@ -6,9 +6,9 @@ mod path_utils;
 
 mod help;
 
-use path_utils::{file_exists, get_file_extension};
-use std::env::args;
 use gif_ascii::gif_to_ascii;
+use path_utils::{file_exists, get_file_extension, is_file};
+use std::env::args;
 
 fn main() -> Result<(), &'static str> {
     let args: Vec<String> = args().skip(1).collect();
@@ -22,11 +22,15 @@ fn main() -> Result<(), &'static str> {
         return Ok(());
     }
 
-
     let file_path = &args[0];
 
     if !file_exists(file_path) {
-        println!("{}: path doesn't exist", file_path);
+        println!("{} : path doesn't exist", file_path);
+        return Ok(());
+    }
+
+    if !is_file(file_path) {
+        println!("{} : is not a file", file_path);
         return Ok(());
     }
 

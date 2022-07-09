@@ -6,7 +6,11 @@ pub fn file_exists(path: &String) -> bool {
 
 pub fn get_file_extension(path: &String) -> &str {
     return match Path::new(path).extension() {
-        None => { "" }
-        Some(ext) => { ext.to_str().unwrap() }
-    }
+        None => "",
+        Some(ext) => ext.to_str().unwrap(),
+    };
+}
+
+pub fn is_file(path: &String) -> bool {
+    Path::new(path).is_file()
 }
