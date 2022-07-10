@@ -18,7 +18,7 @@ usage: hello FILE_PATH [OPTIONS]
 
 ## Formats:
 - [x] .gif
-- [ ] .jpg
-- [ ] .jpeg
-- [ ] .png
+- [x] .jpg
+- [x] .jpeg
+- [x] .png
 - *idk what exists else*
