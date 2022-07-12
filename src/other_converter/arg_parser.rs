@@ -2,12 +2,13 @@ use crate::utils::path_utils::*;
 
 pub fn args_parse(
     args: &Vec<String>,
-) -> Result<(&String, String, (bool, u32, u32), bool, bool), Box<String>> {
+) -> Result<(&String, String, (bool, u32, u32), bool, bool, bool), Box<String>> {
     let file_path = &args[0];
     let mut output: String = String::new();
     let mut size: (bool, u32, u32) = (false, 0, 0);
     let mut noprint = false;
     let mut colored = false;
+    let mut nosave = false;
     let mut iter = args.iter();
     loop {
         match iter.next() {
@@ -40,13 +41,15 @@ pub fn args_parse(
                         noprint = true;
                     } else if attr.starts_with("colored") {
                         colored = true;
+                    } else if attr.starts_with("nosave") {
+                        nosave = true;
                     }
                 }
             }
             None => break,
         }
     }
-    return Ok((file_path, output, size, noprint, colored));
+    return Ok((file_path, output, size, noprint, colored, nosave));
 }
 
 fn check_output(value: Option<&String>) -> Result<String, Box<String>> {

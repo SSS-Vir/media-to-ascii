@@ -2,6 +2,8 @@ mod utils {
     pub mod ascii_utils;
     pub mod color_utils;
     pub mod path_utils;
+    #[cfg(windows)]
+    pub mod stdout;
 }
 
 mod gif_converter {

@@ -10,8 +10,12 @@ pub trait ImageBufferExtensions {
 impl<P: Pixel> ImageBufferExtensions for ImageBuffer<P, Vec<P::Subpixel>> {
     fn to_ascii_string(&self) -> Vec<String> {
         let mut str_image = Vec::<String>::new();
-        let mut line = String::new();
         let width = self.width() as usize;
+        #[cfg(windows)]
+        let default_line_vals: String = String::from_utf8(vec![' ' as u8; width / 2]).unwrap();
+        #[cfg(not(windows))]
+        let default_line_vals: String = String::new();
+        let mut line = default_line_vals.clone();
         let mut pixels = self.pixels();
         for i in 0..pixels.len() {
             let pixel = pixels.next().unwrap();
@@ -20,7 +24,7 @@ impl<P: Pixel> ImageBufferExtensions for ImageBuffer<P, Vec<P::Subpixel>> {
             if (i + 1) % width == 0 {
                 line.push('\n');
                 str_image.push(line);
-                line = String::new();
+                line = default_line_vals.clone();
             }
         }
 

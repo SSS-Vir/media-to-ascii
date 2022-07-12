@@ -10,3 +10,10 @@ image = "0.24.2"
 termsize = "0.1.6"
 colored = "2.0.0"
 clearscreen = "1.0.10"
+
+[dependencies.windows]
+version = "0.38.0"
+features = [
+    "Win32_Foundation",
+    "Win32_System_Console"
+]
